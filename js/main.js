@@ -1,4 +1,10 @@
 "use strict"
+const API_URL = "https://developing-darkened-sceptre.glitch.me/movies";
+function getMovies(){
+    return fetch(API_URL)
+        .then((response) => response.json())
+        .then((resultsObject) => {console.log(resultsObject)})
+}
 
 
 //*** Notes from Fridays lecture ***
