@@ -17,55 +17,54 @@ $(document).ready(function(){
     //https://codepen.io/gustitammam/pen/RRXGdj
 
     const API_URL = "https://developing-darkened-sceptre.glitch.me/movies";
-    function getMovies(){
+
+    function getMovies() {
         var html = "";
         return fetch(API_URL)
-            .then(function(response){
+            .then(function (response) {
                 return response.json();
             })
-            .then(function(resultsObject){
+            .then(function (resultsObject) {
                 console.log(resultsObject)
-            resultsObject.forEach(function(movie, index, array) {
-            console.log(movie.title + ": " + movie.actors + ", " + movie.director)
-            $("#loadingbar").removeClass("d-flex").addClass("d-none");
+                resultsObject.forEach(function (movie, index, array) {
+                    console.log(movie.title + ": " + movie.actors + ", " + movie.director)
+                    $("#loadingbar").removeClass("d-flex").addClass("d-none");
 
-            html += `<div><h2>${movie.title}</h2><p>${movie.year}, ${movie.genre}</p><p>Actors: ${movie.actors}</p><p>Plot: ${movie.plot}</p></div>`
-            $("#movie-div").html(html);
+                    html += `<div><h2>${movie.title}</h2><p>${movie.year}, ${movie.genre}</p><p>Actors: ${movie.actors}</p><p>Plot: ${movie.plot}</p><p>Rating: ${movie.rating}</p></div>`
+                    $("#movie-div").html(html);
+                })
             })
-        })
     }
-
-    function userMovies(){
-        var userTitle = $("#user-entry-title").val();
-        console.log(userTitle);
-        var userRating = $("#user-entry-rating").val();
-        console.log(userRating);
-        return {title: userTitle, rating: userRating}
-    }
-
-    $("#user-movies").click(function(movie){
-       userMovies()
-        console.log(userMovies);
-    });
-
-    const newMovie = (movie) => fetch(`${API_URL}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(movie)
-    })
-        .then(res => res.json())
-        .then(data => {
-            $("#movie-div").html += render(data);
-            return data;
-        })
-        .catch(console.error);
-
-newMovie(userMovies())
     getMovies();
 
-}); //end of document .ready
+    $("#user-movies").click(function(){
+        let title = $("#user-entry-title").val();
+        let rating = $("#user-entry-rating").val();
+        let plot = $("#user-entry-plot").val();
+        let actors = $("#user-entry-actor").val();
+        let year = $("#user-entry-year").val();
+        let genre = $("#user-entry-genre").val();
+       createMovies({title, rating, plot, actors, year, genre}).then(function (res){
+           console.log(res);
+       });
+        // console.log(createMovies());
+    });
+
+
+    function createMovies(movie) {
+        let options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(movie)
+        }
+        return fetch(API_URL, options)
+            .then((response) => response.json())
+    }
+});
+
+// end of document .ready
 //Create dog
 // function createDog(dog) {
 //     let options = {
