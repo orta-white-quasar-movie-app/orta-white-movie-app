@@ -39,6 +39,7 @@ $(document).ready(function(){
     }
     getMovies();
 
+
     $("#user-movies").click(function(){
         let title = $("#user-entry-title").val();
         let rating = $("#user-entry-rating").val();
@@ -69,7 +70,7 @@ $(document).ready(function(){
             'Content-Type': 'application/json'
         }
     }).then(response => response.json()
-    )
+    ).then((jsonData) => location.reload())
         .catch(error => console.log(error));
 
 });
