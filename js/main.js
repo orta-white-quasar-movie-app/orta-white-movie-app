@@ -27,11 +27,13 @@ $(document).ready(function(){
             .then(function (resultsObject) {
                 console.log(resultsObject)
                 resultsObject.forEach(function (movie, index, array) {
-                    console.log(movie.title + ": " + movie.actors + ", " + movie.director)
                     $("#loadingbar").removeClass("d-flex").addClass("d-none");
 
-                    html += `<div><h2>${movie.title}</h2><p>${movie.year}, ${movie.genre}</p><p>Actors: ${movie.actors}</p><p>Plot: ${movie.plot}</p><p>Rating: ${movie.rating}</p></div>`
+                    html += `<div><h2>${movie.title}</h2><p>${movie.year}, ${movie.genre}</p><p>Actors: ${movie.actors}</p><p>Plot: ${movie.plot}</p><p>Rating: ${movie.rating}</p></div><div><button class="delete" data-id="${movie.id}">Delete</button></div>`
                     $("#movie-div").html(html);
+                        $(".delete").click(function(){
+                            deleteMovie($(this).data("id"))
+                        });
                 })
             })
     }
@@ -50,7 +52,6 @@ $(document).ready(function(){
         // console.log(createMovies());
     });
 
-
     function createMovies(movie) {
         let options = {
             method: 'POST',
@@ -62,9 +63,32 @@ $(document).ready(function(){
         return fetch(API_URL, options)
             .then((response) => response.json())
     }
-});
+    let deleteMovie = (id) => fetch(`${API_URL}/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(response => response.json()
+    )
+        .catch(error => console.log(error));
 
+});
 // end of document .ready
+// function deleteDog(id){
+//     let options = {
+//         method: 'DELETE',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//     }
+//     fetch(`${API_URL}/${id}, options`)
+//         .then((response) => console.log("deleted dog"))
+// }
+//.then(function(response) {
+// console.log("deleted dog")
+//}
+
+
 //Create dog
 // function createDog(dog) {
 //     let options = {
@@ -122,14 +146,5 @@ $(document).ready(function(){
 
 //editDog(piper).then((data)=>console.log(data))
 
-// function deleteDog(id){
-//     let options = {
-//         method: 'DELETE',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//     }
-//     fetch(`${API_URL}/${id}, options`)
-//         .then((response) => console.log("deleted dog"))
-// }
+
 
