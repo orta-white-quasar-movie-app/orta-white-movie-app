@@ -29,55 +29,51 @@ $(document).ready(function(){
                 resultsObject.forEach(function (movie, index, array) {
                     $("#loadingbar").removeClass("d-flex").addClass("d-none");
 //Populates movies in HTML
-                    html += `<div><h2 >${movie.title}</h2><img style="width: 150px" src="${movie.poster}"><p>${movie.year}, ${movie.genre}</p><p>Actors: ${movie.actors}</p><p>Plot: ${movie.plot}</p><p>Rating: ${movie.rating}</p></div><div><button class="delete" data-id="${movie.id}">Delete</button></div>`
-                    //Deletes Each Movie
+                    html += `<div><h2 >${movie.title}</h2><img style="width: 150px" src="${movie.poster}"><p>${movie.year}, ${movie.genre}</p><p>Actors: ${movie.actors}</p><p>Plot: ${movie.plot}</p><p>Rating: ${movie.rating}</p></div><div><button class="delete" data-id="${movie.id}">Delete</button></div><div><button type='button' class="edit-movie btn btn-primary" data-toggle="modal" data-target="#userEditModal" data-whatever="@mdo" data-id="${movie.id}">Edit</button></div>`
                     $("#movie-div").html(html);
-                        $(".delete").click(function(){
+                    //Deletes Each Movie
+                    $(".delete").click(function(){
                             deleteMovie($(this).data("id"))
                         });
+                    //allow user to edit a movie
+                    // $(".edit-movie").click(function(){
+                    //         editMovie($(this).data("id"))
+                    // })
                 })
             })
     }
     getMovies();
 
+    //copied from bootstrap modal page
+    $(".edit-movie").click(function(){
+        $('#userEditModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var recipient = button.data('whatever') // Extract info from data-* attributes
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var modal = $(this)
+            modal.find('.modal-title').text('New message to ' + recipient)
+            modal.find('.modal-body input').val(recipient)
+            modal.find(".modal-body textarea").val("enter text")
+        })
+    })
 
-    function EditMovies() {
-        var html = "";
-        var msg = document.getElementById('movie-edit-box');
-        return fetch(API_URL)
-            .then(function (response) {
-                return response.json();
-            }).then(function (resultsObject) {
-                console.log(resultsObject);
-                var catalog = document.getElementById('select');
-                for (var i = 0; i < resultsObject.length; i++) {
-                    // POPULATE SELECT ELEMENT WITH JSON.
-                    catalog.innerHTML +=
-                        '<option value="' + resultsObject[i].id + '">' + resultsObject[i].title + '</option>';
 
-                    msg.innerHTML = 'Selected Movie: <b>' + catalog.options[catalog.selectedIndex].text + '</b>' +
-                        'ID: <b>' + catalog.value + '</b>';
-                }
-            });
+
+
+function editMovie(movie) {
+    let options = {
+        method: 'PUT',       //use put to edit the movie, we are not creating a new one
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(movie)    //what is body. body is referring to the body of the request
     }
+    return fetch(`${API_URL}/${movie.id}`, options)
+        .then((response)=>response.json())
+}
+//editMovie(movie).then((data)=>console.log(data))
 
-    EditMovies();
-
-
-// //Edit the Movies Button
-//     const paragraph = document.getElementById("edit");
-//     const edit_button = document.getElementById("edit-button");
-//     const end_button = document.getElementById("end-editing");
-//
-//     edit_button.addEventListener("click", function() {
-//         paragraph.contentEditable = true;
-//         paragraph.style.backgroundColor = "#dddbdb";
-//     } );
-//
-//     end_button.addEventListener("click", function() {
-//         paragraph.contentEditable = false;
-//         paragraph.style.backgroundColor = "#ffe44d";
-//     } )
 
     $("#user-movies").click(function(){
         let title = $("#user-entry-title").val();
@@ -115,6 +111,45 @@ $(document).ready(function(){
         .catch(error => console.log(error));
 });
 // end of document .ready
+
+
+// function EditMovies() {
+//     var html = "";
+//     var msg = document.getElementById('movie-edit-box');
+//     return fetch(API_URL)
+//         .then(function (response) {
+//             return response.json();
+//         }).then(function (resultsObject) {
+//             console.log(resultsObject);
+//             var catalog = document.getElementById('select');
+//             for (var i = 0; i < resultsObject.length; i++) {
+//                 // POPULATE SELECT ELEMENT WITH JSON.
+//                 catalog.innerHTML +=
+//                     '<option value="' + resultsObject[i].id + '">' + resultsObject[i].title + '</option>';
+//
+//                 msg.innerHTML = 'Selected Movie: <b>' + catalog.options[catalog.selectedIndex].text + '</b>' +
+//                     'ID: <b>' + catalog.value + '</b>';
+//             }
+//         });
+// }
+//
+// EditMovies();
+
+
+// //Edit the Movies Button
+//     const paragraph = document.getElementById("edit");
+//     const edit_button = document.getElementById("edit-button");
+//     const end_button = document.getElementById("end-editing");
+//
+//     edit_button.addEventListener("click", function() {
+//         paragraph.contentEditable = true;
+//         paragraph.style.backgroundColor = "#dddbdb";
+//     } );
+//
+//     end_button.addEventListener("click", function() {
+//         paragraph.contentEditable = false;
+//         paragraph.style.backgroundColor = "#ffe44d";
+//     } )
 // function deleteDog(id){
 //     let options = {
 //         method: 'DELETE',
