@@ -28,8 +28,9 @@ $(document).ready(function(){
                 console.log(resultsObject)
                 resultsObject.forEach(function (movie, index, array) {
                     $("#loadingbar").removeClass("d-flex").addClass("d-none");
-
-                    html += `<div><h2>${movie.title}</h2><p>${movie.year}, ${movie.genre}</p><p>Actors: ${movie.actors}</p><p>Plot: ${movie.plot}</p><p>Rating: ${movie.rating}</p></div><div><button class="delete" data-id="${movie.id}">Delete</button></div>`
+//Populates movies in HTML
+                    html += `<div><h2 >${movie.title}</h2><img style="width: 150px" src="${movie.poster}"><p>${movie.year}, ${movie.genre}</p><p>Actors: ${movie.actors}</p><p>Plot: ${movie.plot}</p><p>Rating: ${movie.rating}</p></div><div><button class="delete" data-id="${movie.id}">Delete</button></div>`
+                    //Deletes Each Movie
                     $("#movie-div").html(html);
                         $(".delete").click(function(){
                             deleteMovie($(this).data("id"))
@@ -39,6 +40,44 @@ $(document).ready(function(){
     }
     getMovies();
 
+
+    function EditMovies() {
+        var html = "";
+        var msg = document.getElementById('movie-edit-box');
+        return fetch(API_URL)
+            .then(function (response) {
+                return response.json();
+            }).then(function (resultsObject) {
+                console.log(resultsObject);
+                var catalog = document.getElementById('select');
+                for (var i = 0; i < resultsObject.length; i++) {
+                    // POPULATE SELECT ELEMENT WITH JSON.
+                    catalog.innerHTML +=
+                        '<option value="' + resultsObject[i].id + '">' + resultsObject[i].title + '</option>';
+
+                    msg.innerHTML = 'Selected Movie: <b>' + catalog.options[catalog.selectedIndex].text + '</b>' +
+                        'ID: <b>' + catalog.value + '</b>';
+                }
+            });
+    }
+
+    EditMovies();
+
+
+// //Edit the Movies Button
+//     const paragraph = document.getElementById("edit");
+//     const edit_button = document.getElementById("edit-button");
+//     const end_button = document.getElementById("end-editing");
+//
+//     edit_button.addEventListener("click", function() {
+//         paragraph.contentEditable = true;
+//         paragraph.style.backgroundColor = "#dddbdb";
+//     } );
+//
+//     end_button.addEventListener("click", function() {
+//         paragraph.contentEditable = false;
+//         paragraph.style.backgroundColor = "#ffe44d";
+//     } )
 
     $("#user-movies").click(function(){
         let title = $("#user-entry-title").val();
@@ -52,7 +91,7 @@ $(document).ready(function(){
        });
         // console.log(createMovies());
     });
-
+//Allow user to create movie
     function createMovies(movie) {
         let options = {
             method: 'POST',
@@ -64,6 +103,8 @@ $(document).ready(function(){
         return fetch(API_URL, options)
             .then((response) => response.json())
     }
+
+    //Delete Method for 'FOREACH' function to delete
     let deleteMovie = (id) => fetch(`${API_URL}/${id}`, {
         method: 'DELETE',
         headers: {
@@ -72,7 +113,6 @@ $(document).ready(function(){
     }).then(response => response.json()
     ).then((jsonData) => location.reload())
         .catch(error => console.log(error));
-
 });
 // end of document .ready
 // function deleteDog(id){
