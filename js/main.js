@@ -1,14 +1,5 @@
 "use strict"
 $(document).ready(function(){
-    const deleteMovie = (id) => fetch(`${API_URL}/${id}`, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    }).then(response => response.json()
-    )
-        .catch(error => console.log(error));
-
     var current_progress = 10;
     function moveProgressBar() {
         var interval = setInterval(function () {
@@ -72,7 +63,14 @@ $(document).ready(function(){
         return fetch(API_URL, options)
             .then((response) => response.json())
     }
-
+    let deleteMovie = (id) => fetch(`${API_URL}/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(response => response.json()
+    )
+        .catch(error => console.log(error));
 
 });
 // end of document .ready
