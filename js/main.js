@@ -33,7 +33,7 @@ $(document).ready(function () {
                 resultsObject.forEach(function (movie, index, array) {
                     $("#loadingbar").removeClass("d-flex").addClass("d-none");
 //Populates movies in HTML
-                    html += `<div class="row"><div class="col-4"><h2 >${movie.title}</h2><img style="width: 150px" src="${movie.poster}"></div><div class="col-8 mt-5"><p>${movie.year}, ${movie.genre}</p><p>Actors: ${movie.actors}</p><p>Plot: ${movie.plot}</p><p>Rating: ${movie.rating}</p></div></div><div class="d-flex mt-2"><div class="d-inline"><button class="delete btn btn-primary mr-2" data-id="${movie.id}">Delete</button></div><div><button class="btn btn-primary edit-button" data-id="${movie.id}">Edit</button></div></div>`
+                    html += `<div class="myborder"><div class="row"><div class="col-4"><h2 >${movie.title}</h2><img class="poster-border" style="width: 150px" src="${movie.poster}"></div><div class="col-8 mt-5"><p>${movie.year}, ${movie.genre}</p><p>Actors: ${movie.actors}</p><p>Plot: ${movie.plot}</p><p>Rating: ${movie.rating}</p></div></div><div class="d-flex mt-2 mb-2"><div class="d-inline"><button class="delete btn btn-primary mr-2" data-id="${movie.id}">Delete</button></div><div><button class="btn btn-primary edit-button" data-id="${movie.id}">Edit</button></div></div></div>`
                     $("#movie-div").html(html);
                     //Deletes Each Movie
                     $(".delete").click(function () { //Delete insert to input function to each movie

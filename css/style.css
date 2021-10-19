@@ -9,4 +9,17 @@ h1 {
 
 body {
     font-family: 'Russo One', sans-serif;
+    background-color: #DDD;
+}
+
+.myborder {
+    border: .25em solid #30475E;
+    margin-top: .25em;
+    margin-bottom: .25em;
+    border-radius: 10% 25% 0% 10% / 0% 10% 10% 0%;
+}
+
+.poster-border {
+    border: 2px solid #f05454;
+    border-radius: 8% 8% 10% 10% / 36% 36% 27% 28%;
 }
