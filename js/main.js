@@ -102,7 +102,6 @@ $(document).ready(function(){
 
 
 
-
     function editMovie(movie) {
         let options = {
             method: 'PUT',       //use put to edit the movie, we are not creating a new one
@@ -115,6 +114,10 @@ $(document).ready(function(){
             .then((response)=>response.json())
     }
 //editMovie(movie).then((data)=>console.log(data))
+
+    $("#try-button").on("click", function(){
+        $('#isThisWorking').modal('show')
+    });
 });
 // end of document .ready
 
