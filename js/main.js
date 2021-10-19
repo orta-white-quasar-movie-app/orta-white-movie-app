@@ -17,6 +17,7 @@ $(document).ready(function(){
     //https://codepen.io/gustitammam/pen/RRXGdj
 
     const API_URL = "https://developing-darkened-sceptre.glitch.me/movies";
+    const OMDB_API = "http://www.omdbapi.com/?i=tt3896198&apikey=dce006cf"
 
     function getMovies() {
         var html = "";
@@ -40,13 +41,54 @@ $(document).ready(function(){
                     //         editMovie($(this).data("id"))
                     // })
                 })
+            }).then(function (){
+                $("#user-movies").click(function(){
+                    var html = "";
+                    let title = $("#user-entry-title").val();
+
+                    return fetch(`http://www.omdbapi.com/?t=${title}&apikey=dce006cf`)
+                        .then(function (response) {
+                            return response.json();
+                        })
+                        .then(function (resultsObject) {
+                            console.log(resultsObject)
+                            let listofMovie = {};
+                            listofMovie.rating = resultsObject.imdbRating;
+                            listofMovie.title = resultsObject.Title;
+                            listofMovie.plot = resultsObject.Plot;
+                            listofMovie.actors = resultsObject.Actors
+                            listofMovie.year = resultsObject.Year;
+                            listofMovie.poster = resultsObject.Poster;
+                            listofMovie.genre = resultsObject.Genre
+                            console.log(listofMovie)
+                            let options = {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify(listofMovie)
+                            }
+                            return fetch(API_URL, options)
+                                .then((response) => response.json())
+                        })
+                })
             })
     }
     getMovies();
 
+    //Delete Method for 'FOREACH' function to delete
+    let deleteMovie = (id) => fetch(`${API_URL}/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(response => response.json()
+    ).then((jsonData) => location.reload())
+        .catch(error => console.log(error));
+
     //copied from bootstrap modal page
     $(".edit-movie").click(function(){
-        $('#userEditModal').on('show.bs.modal', function (event) {
+        $('#userEditModal').on('shown.bs.modal', function (event) {
             var button = $(event.relatedTarget) // Button that triggered the modal
             var recipient = button.data('whatever') // Extract info from data-* attributes
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
@@ -61,54 +103,18 @@ $(document).ready(function(){
 
 
 
-function editMovie(movie) {
-    let options = {
-        method: 'PUT',       //use put to edit the movie, we are not creating a new one
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(movie)    //what is body. body is referring to the body of the request
-    }
-    return fetch(`${API_URL}/${movie.id}`, options)
-        .then((response)=>response.json())
-}
-//editMovie(movie).then((data)=>console.log(data))
-
-
-    $("#user-movies").click(function(){
-        let title = $("#user-entry-title").val();
-        let rating = $("#user-entry-rating").val();
-        let plot = $("#user-entry-plot").val();
-        let actors = $("#user-entry-actor").val();
-        let year = $("#user-entry-year").val();
-        let genre = $("#user-entry-genre").val();
-       createMovies({title, rating, plot, actors, year, genre}).then(function (res){
-           console.log(res);
-       });
-        // console.log(createMovies());
-    });
-//Allow user to create movie
-    function createMovies(movie) {
+    function editMovie(movie) {
         let options = {
-            method: 'POST',
+            method: 'PUT',       //use put to edit the movie, we are not creating a new one
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(movie)
+            body: JSON.stringify(movie)    //what is body. body is referring to the body of the request
         }
-        return fetch(API_URL, options)
-            .then((response) => response.json())
+        return fetch(`${API_URL}/${movie.id}`, options)
+            .then((response)=>response.json())
     }
-
-    //Delete Method for 'FOREACH' function to delete
-    let deleteMovie = (id) => fetch(`${API_URL}/${id}`, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    }).then(response => response.json()
-    ).then((jsonData) => location.reload())
-        .catch(error => console.log(error));
+//editMovie(movie).then((data)=>console.log(data))
 });
 // end of document .ready
 
