@@ -30,16 +30,13 @@ $(document).ready(function(){
                 resultsObject.forEach(function (movie, index, array) {
                     $("#loadingbar").removeClass("d-flex").addClass("d-none");
 //Populates movies in HTML
-                    html += `<div><h2 >${movie.title}</h2><img style="width: 150px" src="${movie.poster}"><p>${movie.year}, ${movie.genre}</p><p>Actors: ${movie.actors}</p><p>Plot: ${movie.plot}</p><p>Rating: ${movie.rating}</p></div><div><button class="delete" data-id="${movie.id}">Delete</button></div><div><button type='button' class="edit-movie btn btn-primary" data-toggle="modal" data-target="#userEditModal" data-whatever="@mdo" data-id="${movie.id}">Edit</button></div>`
+                    html += `<div><h2 >${movie.title}</h2><img style="width: 150px" src="${movie.poster}"><p>${movie.year}, ${movie.genre}</p><p>Actors: ${movie.actors}</p><p>Plot: ${movie.plot}</p><p>Rating: ${movie.rating}</p></div><div><button class="delete" data-id="${movie.id}">Delete</button></div><div><button class="button btn-primary edit-button" data-id="${movie.id}">EDIT?</button></div>`
                     $("#movie-div").html(html);
                     //Deletes Each Movie
                     $(".delete").click(function(){
                             deleteMovie($(this).data("id"))
                         });
-                    //allow user to edit a movie
-                    // $(".edit-movie").click(function(){
-                    //         editMovie($(this).data("id"))
-                    // })
+
                 })
             }).then(function (){
                 $("#user-movies").click(function(){
@@ -76,6 +73,37 @@ $(document).ready(function(){
     }
     getMovies();
 
+    //allow user to edit a movie
+    $(document).on("click", ".edit-button", function(){
+        let id = $(this).attr("data-id")
+        $('#isThisWorking').modal('show')
+        fetch(`${API_URL}/${id}`)
+            .then((response) => response.json())
+            .then(movie => {
+                $("#title-edit").val(movie.title)
+                $("#rating-edit").val(movie.rating)
+            })
+
+        // editMovie($(this).data("id"))
+    });
+//when they click submit #save-changes, run the editMovie function
+    $("#save-changes").click(function(){
+    function editMovie(edit) {
+        let options = {
+            method: 'PUT',       //use put to edit the movie, we are not creating a new one
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(edit)    //what is body. body is referring to the body of the request
+        }
+        return fetch(`${API_URL}/${movie.id}`, options)
+            .then((response)=>response.json())
+    }
+    })
+    //editMovie(movie).then((data)=>console.log(data))
+
+
+
     //Delete Method for 'FOREACH' function to delete
     let deleteMovie = (id) => fetch(`${API_URL}/${id}`, {
         method: 'DELETE',
@@ -86,40 +114,22 @@ $(document).ready(function(){
     ).then((jsonData) => location.reload())
         .catch(error => console.log(error));
 
-    //copied from bootstrap modal page
-    $(".edit-movie").click(function(){
-        $('#userEditModal').on('shown.bs.modal', function (event) {
-            var button = $(event.relatedTarget) // Button that triggered the modal
-            var recipient = button.data('whatever') // Extract info from data-* attributes
-            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-            var modal = $(this)
-            modal.find('.modal-title').text('New message to ' + recipient)
-            modal.find('.modal-body input').val(recipient)
-            modal.find(".modal-body textarea").val("enter text")
-        })
-    })
-
-
-
-    function editMovie(movie) {
-        let options = {
-            method: 'PUT',       //use put to edit the movie, we are not creating a new one
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(movie)    //what is body. body is referring to the body of the request
-        }
-        return fetch(`${API_URL}/${movie.id}`, options)
-            .then((response)=>response.json())
-    }
-//editMovie(movie).then((data)=>console.log(data))
-
-    $("#try-button").on("click", function(){
-        $('#isThisWorking').modal('show')
-    });
 });
 // end of document .ready
+
+//copied from bootstrap modal page
+// $(".edit-movie").click(function(){
+//     $('#userEditModal').on('shown.bs.modal', function (event) {
+//         var button = $(event.relatedTarget) // Button that triggered the modal
+//         var recipient = button.data('whatever') // Extract info from data-* attributes
+//         // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+//         // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+//         var modal = $(this)
+//         modal.find('.modal-title').text('New message to ' + recipient)
+//         modal.find('.modal-body input').val(recipient)
+//         modal.find(".modal-body textarea").val("enter text")
+//     })
+// })
 
 
 // function EditMovies() {
